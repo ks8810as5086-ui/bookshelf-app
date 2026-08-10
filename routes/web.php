@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\BookController;
+use App\Http\Controllers\FavoriteController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [BookController::class, 'index'])
@@ -24,3 +25,7 @@ Route::get('/favorites', function () {
 Route::get('/genres', function () {
     return view('genres.index');
 })->middleware('auth')->name('genres.index');
+
+Route::post('/books/{book}/favorites', [FavoriteController::class, 'toggle'])
+    ->middleware('auth')
+    ->name('favorites.toggle');
