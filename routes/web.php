@@ -3,6 +3,7 @@
 use App\Http\Controllers\BookController;
 use App\Http\Controllers\FavoriteController;
 use App\Http\Controllers\ReviewController;
+use App\Http\Controllers\ReviewLikeController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [BookController::class, 'index'])
@@ -34,3 +35,7 @@ Route::post('/books/{book}/favorites', [FavoriteController::class, 'toggle'])
 Route::post('/books/{book}/reviews', [ReviewController::class, 'store'])
     ->middleware('auth')
     ->name('reviews.store');
+
+Route::post('/reviews/{review}/like', [ReviewLikeController::class, 'toggle'])
+    ->middleware('auth')
+    ->name('reviews.like');
