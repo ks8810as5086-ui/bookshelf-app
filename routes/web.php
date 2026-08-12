@@ -39,3 +39,11 @@ Route::post('/books/{book}/reviews', [ReviewController::class, 'store'])
 Route::post('/reviews/{review}/like', [ReviewLikeController::class, 'toggle'])
     ->middleware('auth')
     ->name('reviews.like');
+
+Route::get('/reviews/{review}/edit', [ReviewController::class, 'edit'])
+    ->middleware('auth')
+    ->name('reviews.edit');
+
+Route::put('/reviews/{review}', [ReviewController::class, 'update'])
+    ->middleware('auth')
+    ->name('reviews.update');
