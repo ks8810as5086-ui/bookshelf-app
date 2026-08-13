@@ -47,3 +47,7 @@ Route::get('/reviews/{review}/edit', [ReviewController::class, 'edit'])
 Route::put('/reviews/{review}', [ReviewController::class, 'update'])
     ->middleware('auth')
     ->name('reviews.update');
+
+Route::delete('/reviews/{review}', [ReviewController::class, 'destroy'])
+    ->middleware('auth')
+    ->name('reviews.destroy');
