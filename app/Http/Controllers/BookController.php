@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\UpdateBookRequest;
 use App\Models\Book;
+use App\Models\Genre;
 
 class BookController extends Controller
 {
@@ -25,5 +27,32 @@ class BookController extends Controller
         ]);
 
         return view('books.show', compact('book'));
+    }
+
+    public function edit(Book $book)
+    {
+        $this->authorize('update', $book);
+
+        $genres = Genre::all();
+
+        return view('books.edit', compact('book', 'genres'));
+
+    }
+
+    public function update(UpdateBookRequest $request, Book $book)
+    {
+        $validated = $request->validated();
+        $validated['published_at'] = $validated['published_date'];
+        unset($validated['published_date']);
+
+        $genres = $validated['genres'];
+        unset($validated['genres']);
+
+        $book->update($validated);
+        $book->genres()->sync($genres);
+
+        return redirect()->route('books.show', $book)
+            ->with('success', '書籍を更新しました。');
+
     }
 }
