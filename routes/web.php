@@ -63,3 +63,7 @@ Route::put('/books/{book}', [BookController::class, 'update'])
 Route::delete('/books/{book}', [BookController::class, 'destroy'])
     ->middleware('auth')
     ->name('books.destroy');
+
+Route::post('/books', [BookController::class, 'store'])
+    ->middleware('auth')
+    ->name('books.store');
