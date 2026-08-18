@@ -20,4 +20,15 @@ class FavoriteController extends Controller
 
         return back();
     }
+
+    public function index()
+    {
+        /** @var User $user */
+        $user = auth()->user();
+
+        $books = $user->favoriteBooks()
+            ->paginate(10);
+
+        return view('favorites.index', compact('books'));
+    }
 }
