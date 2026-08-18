@@ -59,3 +59,7 @@ Route::get('/books/{book}/edit', [BookController::class, 'edit'])
 Route::put('/books/{book}', [BookController::class, 'update'])
     ->middleware('auth')
     ->name('books.update');
+
+Route::delete('/books/{book}', [BookController::class, 'destroy'])
+    ->middleware('auth')
+    ->name('books.destroy');
