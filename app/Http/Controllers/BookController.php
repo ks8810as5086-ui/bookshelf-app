@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreBookRequest;
 use App\Http\Requests\UpdateBookRequest;
 use App\Models\Book;
 use App\Models\Genre;
@@ -65,5 +66,33 @@ class BookController extends Controller
         return redirect()
             ->route('books.index')
             ->with('success', '書籍を削除しました。');
+    }
+
+    public function create()
+    {
+        $genres = Genre::all();
+
+        return view('books.create', compact('genres'));
+    }
+
+    public function store(StoreBookRequest $request)
+    {
+        $validated = $request->validated();
+
+        $validated['published_at'] = $validated['published_date'];
+        unset($validated['published_date']);
+
+        $genres = $validated['genres'];
+        unset($validated['genres']);
+
+        $validated['user_id'] = auth()->id();
+
+        $book = Book::create($validated);
+
+        $book->genres()->attach($genres);
+
+        return redirect()
+            ->route('books.show', $book)
+            ->with('success', '書籍を登録しました。');
     }
 }
