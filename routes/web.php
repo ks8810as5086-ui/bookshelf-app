@@ -20,10 +20,6 @@ Route::get('/ranking', function () {
     return view('ranking.index');
 })->name('ranking.index');
 
-Route::get('/favorites', function () {
-    return view('favorites.index');
-})->middleware('auth')->name('favorites.index');
-
 Route::get('/genres', function () {
     return view('genres.index');
 })->middleware('auth')->name('genres.index');
@@ -67,3 +63,7 @@ Route::delete('/books/{book}', [BookController::class, 'destroy'])
 Route::post('/books', [BookController::class, 'store'])
     ->middleware('auth')
     ->name('books.store');
+
+Route::get('/favorites', [FavoriteController::class, 'index'])
+    ->middleware('auth')
+    ->name('favorites.index');
