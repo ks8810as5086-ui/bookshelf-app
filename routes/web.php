@@ -79,3 +79,11 @@ Route::post('/genres', [GenreController::class, 'store'])
 Route::get('/genres/{genre}', [GenreController::class, 'show'])
     ->middleware('auth')
     ->name('genres.show');
+
+Route::get('/genres/{genre}/edit', [GenreController::class, 'edit'])
+    ->middleware('auth')
+    ->name('genres.edit');
+
+Route::put('/genres/{genre}', [GenreController::class, 'update'])
+    ->middleware('auth')
+    ->name('genres.update');
