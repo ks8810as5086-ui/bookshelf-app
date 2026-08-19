@@ -42,8 +42,11 @@
                                 @foreach($genres as $genre)
                                     <tr>
                                         <td class="px-6 py-4 whitespace-nowrap">
-                                            {{ $genre->name }}
+                                            <a href="{{ route('genres.show', $genre) }}" class="text-blue-600 hover:text-blue-800">
+                                                {{ $genre->name }}
+                                            </a>
                                         </td>
+
                                         <td class="px-6 py-4 whitespace-nowrap">
                                             {{ $genre->books_count }}冊
                                         </td>
