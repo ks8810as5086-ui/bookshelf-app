@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\BookController;
 use App\Http\Controllers\FavoriteController;
+use App\Http\Controllers\GenreController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\ReviewLikeController;
 use Illuminate\Support\Facades\Route;
@@ -19,10 +20,6 @@ Route::get('/books/{book}', [BookController::class, 'show'])
 Route::get('/ranking', function () {
     return view('ranking.index');
 })->name('ranking.index');
-
-Route::get('/genres', function () {
-    return view('genres.index');
-})->middleware('auth')->name('genres.index');
 
 Route::post('/books/{book}/favorites', [FavoriteController::class, 'toggle'])
     ->middleware('auth')
@@ -67,3 +64,6 @@ Route::post('/books', [BookController::class, 'store'])
 Route::get('/favorites', [FavoriteController::class, 'index'])
     ->middleware('auth')
     ->name('favorites.index');
+Route::get('/genres', [GenreController::class, 'index'])
+    ->middleware('auth')
+    ->name('genres.index');
