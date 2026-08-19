@@ -67,3 +67,7 @@ Route::get('/favorites', [FavoriteController::class, 'index'])
 Route::get('/genres', [GenreController::class, 'index'])
     ->middleware('auth')
     ->name('genres.index');
+
+Route::get('/genres/{genre}', [GenreController::class, 'show'])
+    ->middleware('auth')
+    ->name('genres.show');
