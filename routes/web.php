@@ -68,6 +68,14 @@ Route::get('/genres', [GenreController::class, 'index'])
     ->middleware('auth')
     ->name('genres.index');
 
+Route::get('/genres/create', [GenreController::class, 'create'])
+    ->middleware('auth')
+    ->name('genres.create');
+
+Route::post('/genres', [GenreController::class, 'store'])
+    ->middleware('auth')
+    ->name('genres.store');
+
 Route::get('/genres/{genre}', [GenreController::class, 'show'])
     ->middleware('auth')
     ->name('genres.show');
