@@ -87,3 +87,7 @@ Route::get('/genres/{genre}/edit', [GenreController::class, 'edit'])
 Route::put('/genres/{genre}', [GenreController::class, 'update'])
     ->middleware('auth')
     ->name('genres.update');
+
+Route::delete('/genres/{genre}', [GenreController::class, 'destroy'])
+    ->middleware('auth')
+    ->name('genres.destroy');
