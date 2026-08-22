@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Api\StoreBookRequest;
 use App\Models\Book;
 use Illuminate\Http\Request;
 
@@ -37,5 +38,24 @@ class BookController extends Controller
         ]);
 
         return response()->json($book);
+    }
+
+    public function store(StoreBookRequest $request)
+    {
+        $validated = $request->validated();
+
+        $validated['published_at'] = $validated['published_date'];
+        unset($validated['published_date']);
+
+        $genres = $validated['genres'];
+        unset($validated['genres']);
+
+        $book = Book::create($validated);
+
+        $book->genres()->attach($genres);
+
+        $book->load('genres');
+
+        return response()->json($book, 201);
     }
 }
