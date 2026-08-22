@@ -28,4 +28,14 @@ class BookController extends Controller
 
         return response()->json($books);
     }
+
+    public function show(Book $book)
+    {
+        $book->load([
+            'genres',
+            'reviews',
+        ]);
+
+        return response()->json($book);
+    }
 }
