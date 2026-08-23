@@ -78,4 +78,13 @@ class BookController extends Controller
 
         return response()->json($book);
     }
+
+    public function destroy(Book $book)
+    {
+        $book->delete();
+
+        return response()->json([
+            'message' => '書籍を削除しました。',
+        ]);
+    }
 }

@@ -22,3 +22,4 @@ Route::get('/v1/books', [BookController::class, 'index']);
 Route::get('/v1/books/{book}', [BookController::class, 'show']);
 Route::post('/v1/books', [BookController::class, 'store']);
 Route::put('/v1/books/{book}', [BookController::class, 'update']);
+Route::delete('/v1/books/{book}', [BookController::class, 'destroy']);
