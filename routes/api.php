@@ -21,3 +21,4 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::get('/v1/books', [BookController::class, 'index']);
 Route::get('/v1/books/{book}', [BookController::class, 'show']);
 Route::post('/v1/books', [BookController::class, 'store']);
+Route::put('/v1/books/{book}', [BookController::class, 'update']);
