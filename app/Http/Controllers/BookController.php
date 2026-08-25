@@ -20,11 +20,18 @@ class BookController extends Controller
                         ->orWhere('author', 'like', "%{$keyword}%");
                 });
             })
+            ->when($request->genre, function ($query, $genre) {
+                $query->whereHas('genres', function ($query) use ($genre) {
+                    $query->where('genres.id', $genre);
+                });
+            })
             ->latest()
             ->paginate(10)
             ->withQueryString();
 
-        return view('books.index', compact('books'));
+        $genres = Genre::all();
+
+        return view('books.index', compact('books', 'genres'));
     }
 
     public function show(Book $book)
