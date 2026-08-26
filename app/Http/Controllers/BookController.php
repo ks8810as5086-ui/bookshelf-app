@@ -7,6 +7,7 @@ use App\Http\Requests\UpdateBookRequest;
 use App\Models\Book;
 use App\Models\Genre;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
 
 class BookController extends Controller
 {
@@ -117,5 +118,36 @@ class BookController extends Controller
         return redirect()
             ->route('books.show', $book)
             ->with('success', '書籍を登録しました。');
+    }
+
+    public function fetchByIsbn(string $isbn)
+    {
+        $response = Http::get('https://www.googleapis.com/books/v1/volumes', [
+            'q' => 'isbn:'.$isbn,
+        ]);
+
+        if ($response->failed()) {
+            return response()->json([
+                'error' => '書籍情報の取得に失敗しました。',
+            ], 502);
+        }
+
+        $data = $response->json();
+
+        if (empty($data['items'])) {
+            return response()->json([
+                'error' => '書籍が見つかりませんでした。',
+            ], 404);
+        }
+
+        $volumeInfo = $data['items'][0]['volumeInfo'];
+
+        return response()->json([
+            'title' => $volumeInfo['title'] ?? '',
+            'author' => $volumeInfo['authors'][0] ?? '',
+            'published_date' => $volumeInfo['publishedDate'] ?? '',
+            'description' => $volumeInfo['description'] ?? '',
+            'image_url' => $volumeInfo['imageLinks']['thumbnail'] ?? '',
+        ]);
     }
 }
