@@ -15,6 +15,10 @@ Route::get('/books/create', [BookController::class, 'create'])
     ->middleware('auth')
     ->name('books.create');
 
+Route::get('/books/isbn/{isbn}', [BookController::class, 'fetchByIsbn'])
+        ->middleware('auth')
+        ->name('books.isbn');
+
 Route::get('/books/{book}', [BookController::class, 'show'])
     ->name('books.show');
 
