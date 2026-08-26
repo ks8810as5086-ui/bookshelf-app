@@ -24,9 +24,17 @@ class BookController extends Controller
                 $query->whereHas('genres', function ($query) use ($genre) {
                     $query->where('genres.id', $genre);
                 });
-            })
-            ->latest()
-            ->paginate(10)
+            });
+        if ($request->sort === 'oldest') {
+            $books->oldest();
+        } elseif ($request->sort === 'rating') {
+            $books->orderByDesc('reviews_avg_rating');
+        } elseif ($request->sort === 'title') {
+            $books->orderBy('title');
+        } else {
+            $books->latest();
+        }
+        $books = $books->paginate(10)
             ->withQueryString();
 
         $genres = Genre::all();
