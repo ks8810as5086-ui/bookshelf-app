@@ -255,10 +255,10 @@ sail npm run dev
 
 ブラウザから以下へアクセスしてください。
 
-- アプリケーション  
+- アプリケーション
   http://localhost
 
-- phpMyAdmin  
+- phpMyAdmin
   http://localhost:8080
 
 ## 動作確認用ユーザー
@@ -323,6 +323,7 @@ http://localhost/api/v1
 
 | Method | Endpoint | 認証 | 概要 |
 | --- | --- | --- | --- |
+| GET | `/api/user` | Sanctum必須 | 認証ユーザー情報取得 |
 | GET | `/api/v1/books` | 不要 | 書籍一覧取得 |
 | GET | `/api/v1/books/{book}` | 不要 | 書籍詳細取得 |
 | POST | `/api/v1/books` | Sanctum必須 | 書籍登録 |
@@ -479,5 +480,4 @@ sail artisan schedule:list
 
 ## 作成者
 
-＜作成者名＞
 西海　顕一郎
