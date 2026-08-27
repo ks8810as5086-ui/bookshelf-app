@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\IndexBookRequest;
 use App\Http\Requests\Api\StoreBookRequest;
 use App\Http\Requests\Api\UpdateBookRequest;
+use App\Http\Resources\BookResource;
 use App\Models\Book;
 
 class BookController extends Controller
@@ -30,17 +31,17 @@ class BookController extends Controller
             })
             ->paginate($validated['per_page'] ?? 10);
 
-        return response()->json($books);
+        return BookResource::collection($books);
     }
 
     public function show(Book $book)
     {
         $book->load([
             'genres',
-            'reviews',
+            'reviews.user',
         ]);
 
-        return response()->json($book);
+        return new BookResource($book);
     }
 
     public function store(StoreBookRequest $request)
@@ -61,7 +62,9 @@ class BookController extends Controller
 
         $book->load('genres');
 
-        return response()->json($book, 201);
+        return (new BookResource($book))
+            ->response()
+            ->setStatusCode(201);
     }
 
     public function update(UpdateBookRequest $request, Book $book)
@@ -80,7 +83,7 @@ class BookController extends Controller
 
         $book->load('genres');
 
-        return response()->json($book);
+        return new BookResource($book);
     }
 
     public function destroy(Book $book)
