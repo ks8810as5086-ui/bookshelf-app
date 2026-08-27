@@ -95,4 +95,37 @@ class ReportTest extends TestCase
                     === [0, 0, 1, 1, 1];
             });
     }
+
+    public function test_report_does_not_include_other_users_reviews(): void
+    {
+        $user = User::factory()->create();
+        $otherUser = User::factory()->create();
+
+        $userBook = Book::factory()->create();
+        $otherBook = Book::factory()->create();
+
+        Review::factory()->create([
+            'user_id' => $user->id,
+            'book_id' => $userBook->id,
+            'rating' => 5,
+        ]);
+
+        Review::factory()->create([
+            'user_id' => $otherUser->id,
+            'book_id' => $otherBook->id,
+            'rating' => 1,
+        ]);
+
+        $response = $this
+            ->actingAs($user)
+            ->get('/reports');
+
+        $response
+            ->assertOk()
+            ->assertViewHas('stats', function ($stats) {
+                return $stats['summary']['total_reviews'] === 1
+                    && $stats['summary']['books_read'] === 1
+                    && $stats['summary']['average_rating'] == 5.0;
+            });
+    }
 }
