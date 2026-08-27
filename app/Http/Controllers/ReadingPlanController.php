@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\ReadingPlanStatus;
 use App\Models\Book;
 use App\Models\ReadingPlan;
 use Illuminate\Http\Request;
@@ -44,7 +45,7 @@ class ReadingPlanController extends Controller
         auth()->user()->readingPlans()->create([
             'book_id' => $validated['book_id'],
             'target_date' => $validated['target_date'],
-            'status' => 'planned',
+            'status' => ReadingPlanStatus::Planned,
         ]);
 
         return redirect()
@@ -57,7 +58,7 @@ class ReadingPlanController extends Controller
         $this->authorize('update', $readingPlan);
 
         $readingPlan->update([
-            'status' => 'completed',
+            'status' => ReadingPlanStatus::Completed,
             'completed_at' => now(),
         ]);
 
@@ -91,6 +92,7 @@ class ReadingPlanController extends Controller
     public function destroy(ReadingPlan $readingPlan)
     {
         $this->authorize('delete', $readingPlan);
+
         $readingPlan->delete();
 
         return redirect()

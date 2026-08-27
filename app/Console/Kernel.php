@@ -12,6 +12,9 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule): void
     {
+        $schedule->command('app:update-overdue-reading-plans')
+            ->dailyAt('09:00');
+
         $schedule->command('app:send-reading-plan-reminders')
             ->dailyAt('09:00');
     }
