@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Models\Book;
 use App\Models\Genre;
+use App\Models\Review;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Laravel\Sanctum\Sanctum;
@@ -272,5 +273,129 @@ class ApiBookTest extends TestCase
         $response = $this->deleteJson("/api/v1/books/{$book->id}");
 
         $response->assertUnauthorized();
+    }
+
+    public function test_book_list_contains_resource_fields(): void
+    {
+        $user = User::factory()->create();
+
+        $genre = Genre::create([
+            'name' => '技術書',
+        ]);
+
+        $book = Book::create([
+            'user_id' => $user->id,
+            'title' => 'Resourceテスト書籍',
+            'author' => 'Resource著者',
+            'isbn' => '9781234567890',
+            'published_at' => '2026-08-27',
+            'description' => 'Resourceテスト',
+            'image_url' => 'https://example.com/book.jpg',
+        ]);
+
+        $book->genres()->attach($genre->id);
+
+        Review::create([
+            'user_id' => $user->id,
+            'book_id' => $book->id,
+            'rating' => 5,
+            'comment' => '良い本でした。',
+        ]);
+
+        $response = $this->getJson('/api/v1/books');
+
+        $response->assertOk();
+
+        $response->assertJsonStructure([
+            'data' => [
+                '*' => [
+                    'id',
+                    'title',
+                    'author',
+                    'isbn',
+                    'published_date',
+                    'description',
+                    'image_url',
+                    'genres',
+                    'average_rating',
+                    'reviews_count',
+                ],
+            ],
+            'links',
+            'meta',
+        ]);
+
+        $response->assertJsonFragment([
+            'title' => 'Resourceテスト書籍',
+            'name' => '技術書',
+            'average_rating' => 5.0,
+            'reviews_count' => 1,
+        ]);
+    }
+
+    public function test_book_detail_contains_genres_and_reviews(): void
+    {
+        $user = User::factory()->create([
+            'name' => 'レビュー投稿者',
+        ]);
+
+        $genre = Genre::create([
+            'name' => '小説',
+        ]);
+
+        $book = Book::create([
+            'user_id' => $user->id,
+            'title' => '詳細Resource書籍',
+            'author' => '詳細著者',
+        ]);
+
+        $book->genres()->attach($genre->id);
+
+        Review::create([
+            'user_id' => $user->id,
+            'book_id' => $book->id,
+            'rating' => 4,
+            'comment' => '詳細レビュー',
+        ]);
+
+        $response = $this->getJson("/api/v1/books/{$book->id}");
+
+        $response->assertOk();
+
+        $response->assertJsonStructure([
+            'data' => [
+                'id',
+                'title',
+                'author',
+                'isbn',
+                'published_date',
+                'description',
+                'image_url',
+                'genres' => [
+                    '*' => [
+                        'id',
+                        'name',
+                    ],
+                ],
+                'reviews' => [
+                    '*' => [
+                        'id',
+                        'user' => [
+                            'id',
+                            'name',
+                        ],
+                        'rating',
+                        'comment',
+                        'created_at',
+                    ],
+                ],
+            ],
+        ]);
+
+        $response->assertJsonFragment([
+            'name' => 'レビュー投稿者',
+            'rating' => 4,
+            'comment' => '詳細レビュー',
+        ]);
     }
 }
