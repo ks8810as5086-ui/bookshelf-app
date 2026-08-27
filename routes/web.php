@@ -3,6 +3,7 @@
 use App\Http\Controllers\BookController;
 use App\Http\Controllers\FavoriteController;
 use App\Http\Controllers\GenreController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\RankingController;
 use App\Http\Controllers\ReadingPlanController;
 use App\Http\Controllers\ReportController;
@@ -123,3 +124,9 @@ Route::put('/reading-plans/{readingPlan}', [ReadingPlanController::class, 'updat
 Route::delete('/reading-plans/{readingPlan}', [ReadingPlanController::class, 'destroy'])
     ->middleware('auth')
     ->name('reading-plans.destroy');
+Route::get('/notifications', [NotificationController::class, 'index'])
+    ->middleware('auth')
+    ->name('notifications.index');
+Route::post('/notifications/{notification}/read', [NotificationController::class, 'read'])
+    ->middleware('auth')
+    ->name('notifications.read');
