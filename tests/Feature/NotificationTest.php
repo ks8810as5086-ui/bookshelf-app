@@ -131,4 +131,74 @@ class NotificationTest extends TestCase
                 ->count()
         );
     }
+
+    public function test_command_creates_notification_three_days_before_due_date(): void
+    {
+        $user = User::factory()->create();
+        $book = Book::factory()->create();
+
+        ReadingPlan::create([
+            'user_id' => $user->id,
+            'book_id' => $book->id,
+            'target_date' => now()->addDays(3)->toDateString(),
+            'status' => 'planned',
+        ]);
+
+        $this->artisan('app:send-reading-plan-reminders')
+            ->assertSuccessful();
+
+        $notification = $user->notifications()->first();
+
+        $this->assertNotNull($notification);
+        $this->assertSame(
+            'three_days_before',
+            $notification->data['timing']
+        );
+    }
+
+    public function test_command_creates_notification_three_days_after_due_date(): void
+    {
+        $user = User::factory()->create();
+        $book = Book::factory()->create();
+
+        ReadingPlan::create([
+            'user_id' => $user->id,
+            'book_id' => $book->id,
+            'target_date' => now()->subDays(3)->toDateString(),
+            'status' => 'planned',
+        ]);
+
+        $this->artisan('app:send-reading-plan-reminders')
+            ->assertSuccessful();
+
+        $notification = $user->notifications()->first();
+
+        $this->assertNotNull($notification);
+        $this->assertSame(
+            'three_days_after',
+            $notification->data['timing']
+        );
+    }
+
+    public function test_command_does_not_notify_completed_reading_plan(): void
+    {
+        $user = User::factory()->create();
+        $book = Book::factory()->create();
+
+        ReadingPlan::create([
+            'user_id' => $user->id,
+            'book_id' => $book->id,
+            'target_date' => now()->toDateString(),
+            'status' => 'completed',
+            'completed_at' => now(),
+        ]);
+
+        $this->artisan('app:send-reading-plan-reminders')
+            ->assertSuccessful();
+
+        $this->assertSame(
+            0,
+            $user->notifications()->count()
+        );
+    }
 }
