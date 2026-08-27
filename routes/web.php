@@ -4,6 +4,7 @@ use App\Http\Controllers\BookController;
 use App\Http\Controllers\FavoriteController;
 use App\Http\Controllers\GenreController;
 use App\Http\Controllers\RankingController;
+use App\Http\Controllers\ReportController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\ReviewLikeController;
 use Illuminate\Support\Facades\Route;
@@ -16,8 +17,8 @@ Route::get('/books/create', [BookController::class, 'create'])
     ->name('books.create');
 
 Route::get('/books/isbn/{isbn}', [BookController::class, 'fetchByIsbn'])
-        ->middleware('auth')
-        ->name('books.isbn');
+    ->middleware('auth')
+    ->name('books.isbn');
 
 Route::get('/books/{book}', [BookController::class, 'show'])
     ->name('books.show');
@@ -95,3 +96,7 @@ Route::put('/genres/{genre}', [GenreController::class, 'update'])
 Route::delete('/genres/{genre}', [GenreController::class, 'destroy'])
     ->middleware('auth')
     ->name('genres.destroy');
+
+Route::get('/reports', [ReportController::class, 'index'])
+    ->middleware('auth')
+    ->name('reports.index');
