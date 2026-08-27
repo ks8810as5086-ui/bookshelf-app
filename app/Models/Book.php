@@ -39,6 +39,11 @@ class Book extends Model
         return $this->hasMany(Favorite::class);
     }
 
+    public function readingPlans()
+    {
+        return $this->hasMany(ReadingPlan::class);
+    }
+
     public function getPublishedDateAttribute()
     {
         return $this->published_at;

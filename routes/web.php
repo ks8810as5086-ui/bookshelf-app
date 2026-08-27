@@ -4,6 +4,7 @@ use App\Http\Controllers\BookController;
 use App\Http\Controllers\FavoriteController;
 use App\Http\Controllers\GenreController;
 use App\Http\Controllers\RankingController;
+use App\Http\Controllers\ReadingPlanController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\ReviewLikeController;
@@ -100,3 +101,25 @@ Route::delete('/genres/{genre}', [GenreController::class, 'destroy'])
 Route::get('/reports', [ReportController::class, 'index'])
     ->middleware('auth')
     ->name('reports.index');
+Route::get('/reading-plans', [ReadingPlanController::class, 'index'])
+    ->middleware('auth')
+    ->name('reading-plans.index');
+Route::get('/reading-plans/create', [ReadingPlanController::class, 'create'])
+    ->middleware('auth')
+    ->name('reading-plans.create');
+Route::post('/reading-plans', [ReadingPlanController::class, 'store'])
+    ->middleware('auth')
+    ->name('reading-plans.store');
+Route::post('/reading-plans/{readingPlan}/complete', [ReadingPlanController::class, 'complete'])
+    ->middleware('auth')
+    ->name('reading-plans.complete');
+Route::get('/reading-plans/{readingPlan}/edit', [ReadingPlanController::class, 'edit'])
+    ->middleware('auth')
+    ->name('reading-plans.edit');
+
+Route::put('/reading-plans/{readingPlan}', [ReadingPlanController::class, 'update'])
+    ->middleware('auth')
+    ->name('reading-plans.update');
+Route::delete('/reading-plans/{readingPlan}', [ReadingPlanController::class, 'destroy'])
+    ->middleware('auth')
+    ->name('reading-plans.destroy');
