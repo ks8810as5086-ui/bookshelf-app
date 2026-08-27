@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Enums\ReadingPlanStatus;
+use App\Http\Requests\StoreReadingPlanRequest;
+use App\Http\Requests\UpdateReadingPlanRequest;
 use App\Models\Book;
 use App\Models\ReadingPlan;
 use Illuminate\Http\Request;
@@ -35,12 +37,9 @@ class ReadingPlanController extends Controller
         return view('reading-plans.create', compact('books'));
     }
 
-    public function store(Request $request)
+    public function store(StoreReadingPlanRequest $request)
     {
-        $validated = $request->validate([
-            'book_id' => ['required', 'exists:books,id'],
-            'target_date' => ['required', 'date'],
-        ]);
+        $validated = $request->validated();
 
         auth()->user()->readingPlans()->create([
             'book_id' => $validated['book_id'],
@@ -74,13 +73,9 @@ class ReadingPlanController extends Controller
         return view('reading-plans.edit', compact('readingPlan'));
     }
 
-    public function update(Request $request, ReadingPlan $readingPlan)
+    public function update(UpdateReadingPlanRequest $request, ReadingPlan $readingPlan)
     {
-        $this->authorize('update', $readingPlan);
-
-        $validated = $request->validate([
-            'target_date' => ['required', 'date'],
-        ]);
+        $validated = $request->validated();
 
         $readingPlan->update($validated);
 

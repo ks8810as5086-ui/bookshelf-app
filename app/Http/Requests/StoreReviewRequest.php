@@ -18,4 +18,15 @@ class StoreReviewRequest extends FormRequest
             'comment' => ['nullable', 'string', 'max:255'],
         ];
     }
+
+    public function messages(): array
+    {
+        return [
+            'rating.required' => '評価を選択してください。',
+            'rating.integer' => '評価は整数で指定してください。',
+            'rating.between' => '評価は1〜5の範囲で指定してください。',
+            'comment.string' => 'コメントは文字列で入力してください。',
+            'comment.max' => 'コメントは255文字以内で入力してください。',
+        ];
+    }
 }

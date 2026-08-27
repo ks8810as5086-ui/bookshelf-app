@@ -3,30 +3,32 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Api\IndexBookRequest;
 use App\Http\Requests\Api\StoreBookRequest;
 use App\Http\Requests\Api\UpdateBookRequest;
 use App\Models\Book;
-use Illuminate\Http\Request;
 
 class BookController extends Controller
 {
-    public function index(Request $request)
+    public function index(IndexBookRequest $request)
     {
+        $validated = $request->validated();
+
         $books = Book::with('genres')
             ->withAvg('reviews', 'rating')
             ->withCount('reviews')
-            ->when($request->keyword, function ($query, $keyword) {
+            ->when($validated['keyword'] ?? null, function ($query, $keyword) {
                 $query->where(function ($query) use ($keyword) {
                     $query->where('title', 'like', "%{$keyword}%")
                         ->orWhere('author', 'like', "%{$keyword}%");
                 });
             })
-            ->when($request->genre_id, function ($query, $genreId) {
+            ->when($validated['genre_id'] ?? null, function ($query, $genreId) {
                 $query->whereHas('genres', function ($query) use ($genreId) {
                     $query->where('genres.id', $genreId);
                 });
             })
-            ->paginate(10);
+            ->paginate($validated['per_page'] ?? 10);
 
         return response()->json($books);
     }
@@ -45,7 +47,9 @@ class BookController extends Controller
     {
         $validated = $request->validated();
 
-        $validated['published_at'] = $validated['published_date'];
+        $validated['user_id'] = $request->user()->id;
+
+        $validated['published_at'] = $validated['published_date'] ?? null;
         unset($validated['published_date']);
 
         $genres = $validated['genres'];
@@ -64,7 +68,7 @@ class BookController extends Controller
     {
         $validated = $request->validated();
 
-        $validated['published_at'] = $validated['published_date'];
+        $validated['published_at'] = $validated['published_date'] ?? null;
         unset($validated['published_date']);
 
         $genres = $validated['genres'];
@@ -81,6 +85,8 @@ class BookController extends Controller
 
     public function destroy(Book $book)
     {
+        $this->authorize('delete', $book);
+
         $book->delete();
 
         return response()->json([
